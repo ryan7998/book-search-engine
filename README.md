@@ -19,4 +19,4 @@
 - Apollo Provider implemented to communicate with the Apollo Server.
 
 ## Site:
-- Link to the site: https://ryan7998.github.io/react-portfolio/
+- Link to the site: https://ryan7998-book-search-engine.herokuapp.com/
