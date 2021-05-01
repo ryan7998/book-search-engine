@@ -41,8 +41,6 @@ const SearchBooks = () => {
       }
       const { items } = await response.json();
 
-      // const {data} = await 
-
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -62,23 +60,9 @@ const SearchBooks = () => {
   const handleSaveBook = async (bookId) => {
     // find the book in `searchedBooks` state by the matching id
     const bookToSave = searchedBooks.find((book) => book.bookId === bookId);
-    // get token
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-    
-    if (!token) {
-      return false;
-    }
-    // console.log(token);
     try {
-      // const response = await saveBook(bookToSave, token);
-      // if (!response.ok) {
-      //   throw new Error('something went wrong!');
-      // }
-      // const {authors, bookId} = bookToSave;
-      // console.log(authors, bookId);
 
       await saveBook({
-        // variables: { authors, bookId }
         variables: { ...bookToSave }
       });
 
