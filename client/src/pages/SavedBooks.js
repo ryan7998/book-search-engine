@@ -10,14 +10,7 @@ const SavedBooks = () => {
   const {loading, data} = useQuery(GET_ME);
 
   const[userData, setData] = useState(loading ? null : data.me);
-  // const newdata = {...userData?.me};
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
-
-  // useEffect(() =>{
-  //   if(userData){
-  //     console.log('useeffect!!')
-  //   }
-  // },[userData])
   
   if(!userData){
       return null
