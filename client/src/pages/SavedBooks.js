@@ -7,23 +7,17 @@ import { removeBookId } from '../utils/localStorage';
 
 
 const SavedBooks = () => {
-  const {loading, data: userData} = useQuery(GET_ME);
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK, {
-    update(cache, {data: {removeBook}}){
-      console.log(cache);
-      const {me} = cache.readQuery({query: GET_ME});
-      
-      const newBooksData = {
-        savedBooks: me.savedBooks.filter((t) => t.id !== 'SnLsDwAAQBAJ')
-      }
-      console.log(newBooksData);
+  const {loading, data} = useQuery(GET_ME);
 
-      cache.writeQuery({
-        query: GET_ME,
-        data:{ me:{newBooksData}}
-      })
+  const[userData, setData] = useState(loading ? null : data.me);
+  const newdata = {...userData?.me};
+  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+
+  useEffect(() =>{
+    if(userData){
+      console.log('useeffect!!')
     }
-  });
+  },[userData])
   
   if(!userData){
       return null
@@ -34,11 +28,18 @@ const SavedBooks = () => {
        const data = await removeBook({
         variables: {bookId},
       });
+      console.log(data.data.removeBook.savedBooks);
+      setData(()=>{
+        return{
+          ...userData,
+          savedBooks: data.data.removeBook.savedBooks
+        }
+      })
+      console.log('New Data: ', userData);
     } catch (err) {
       console.error(err);
     }
     removeBookId(bookId);
-    window.location.reload(false);
   };
 
 
@@ -51,13 +52,13 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {!loading && userData.me.savedBooks.length
-            ? `Viewing ${userData.me.savedBooks.length} saved ${userData.me.savedBooks.length === 1 ? 'book' : 'books'}:`
+          {!loading && userData.savedBooks.length
+            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'
           }
         </h2>
         <CardColumns>
-          {!loading && userData.me.savedBooks.map((book) => {
+          {!loading && userData.savedBooks.map((book) => {
               return (
                 <Card key={book.bookId} border='dark'>
                   {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
