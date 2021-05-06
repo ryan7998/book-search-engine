@@ -10,14 +10,14 @@ const SavedBooks = () => {
   const {loading, data} = useQuery(GET_ME);
 
   const[userData, setData] = useState(loading ? null : data.me);
-  const newdata = {...userData?.me};
+  // const newdata = {...userData?.me};
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
 
-  useEffect(() =>{
-    if(userData){
-      console.log('useeffect!!')
-    }
-  },[userData])
+  // useEffect(() =>{
+  //   if(userData){
+  //     console.log('useeffect!!')
+  //   }
+  // },[userData])
   
   if(!userData){
       return null
@@ -28,14 +28,14 @@ const SavedBooks = () => {
        const data = await removeBook({
         variables: {bookId},
       });
-      console.log(data.data.removeBook.savedBooks);
+
+      // update state of books:
       setData(()=>{
         return{
           ...userData,
           savedBooks: data.data.removeBook.savedBooks
         }
       })
-      console.log('New Data: ', userData);
     } catch (err) {
       console.error(err);
     }
