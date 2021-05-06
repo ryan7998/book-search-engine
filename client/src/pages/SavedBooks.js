@@ -9,10 +9,8 @@ import { removeBookId } from '../utils/localStorage';
 const SavedBooks = () => {
   const {loading, data} = useQuery(GET_ME);
 
-  const[userData, setData] = useState(loading ? null : data);
+  const[userData, setData] = useState(loading ? null : data.me);
   const newdata = {...userData?.me};
-  // console.log(newdata.savedBooks);
-  
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
 
   useEffect(() =>{
@@ -30,20 +28,18 @@ const SavedBooks = () => {
        const data = await removeBook({
         variables: {bookId},
       });
+      console.log(data.data.removeBook.savedBooks);
       setData(()=>{
         return{
           ...userData,
           savedBooks: data.data.removeBook.savedBooks
         }
       })
-      // console.log(data.data.removeBook.savedBooks);
-      console.log('OldData:', newdata.savedBooks);
       console.log('New Data: ', userData);
     } catch (err) {
       console.error(err);
     }
     removeBookId(bookId);
-    // window.location.reload(false);
   };
 
 
@@ -56,13 +52,13 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {!loading && userData.me.savedBooks.length
-            ? `Viewing ${userData.me.savedBooks.length} saved ${userData.me.savedBooks.length === 1 ? 'book' : 'books'}:`
+          {!loading && userData.savedBooks.length
+            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'
           }
         </h2>
         <CardColumns>
-          {!loading && userData.me.savedBooks.map((book) => {
+          {!loading && userData.savedBooks.map((book) => {
               return (
                 <Card key={book.bookId} border='dark'>
                   {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
