@@ -7,23 +7,19 @@ import { removeBookId } from '../utils/localStorage';
 
 
 const SavedBooks = () => {
-  const {loading, data: userData} = useQuery(GET_ME);
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK, {
-    update(cache, {data: {removeBook}}){
-      console.log(cache);
-      const {me} = cache.readQuery({query: GET_ME});
-      
-      const newBooksData = {
-        savedBooks: me.savedBooks.filter((t) => t.id !== 'SnLsDwAAQBAJ')
-      }
-      console.log(newBooksData);
+  const {loading, data} = useQuery(GET_ME);
 
-      cache.writeQuery({
-        query: GET_ME,
-        data:{ me:{newBooksData}}
-      })
+  const[userData, setData] = useState(loading ? null : data);
+  const newdata = {...userData?.me};
+  // console.log(newdata.savedBooks);
+  
+  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+
+  useEffect(() =>{
+    if(userData){
+      console.log('useeffect!!')
     }
-  });
+  },[userData])
   
   if(!userData){
       return null
@@ -34,11 +30,20 @@ const SavedBooks = () => {
        const data = await removeBook({
         variables: {bookId},
       });
+      setData(()=>{
+        return{
+          ...userData,
+          savedBooks: data.data.removeBook.savedBooks
+        }
+      })
+      // console.log(data.data.removeBook.savedBooks);
+      console.log('OldData:', newdata.savedBooks);
+      console.log('New Data: ', userData);
     } catch (err) {
       console.error(err);
     }
     removeBookId(bookId);
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
 
